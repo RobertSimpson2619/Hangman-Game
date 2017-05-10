@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Hangman</title>
+  </head>
+  <body style="background:#777777;color:white;">
+
+  <div class="wrapper">
+    <h1>Hangman</h1>
+    <p>Use the alphabet below to guess the word!</p>
+  </div>
+
+  <div id="buttons">
+  </div>
+
+  <p id="categoryName"></p>
+
+  <div id="hold"></div>
+
+  <p id="myLives"></p>
+
+  <button id="reset">Play Again</button>
+
+
+
+
+  
+
+
+    
+
+    <script type="text/javascript">
+    var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+        'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+        't', 'u', 'v', 'w', 'x', 'y', 'z'];
+
+    var categories; //array of topics
+    var chosenCategory; //selected category
+    var word; //chosen word
+    var userGuess;  //guess
+    var storedGuesses = []; //stored guesses
+    var lives;   //lives
+    var counter; //count correct 
+    var space; //number of spaces in the word
+
+      // array within an array! genius
+      var categories = [
+      ["titanic","inception","avatar"],
+      ["spaghetti","fajitas","tacos","hamburger"],
+      ["football","soccer","tennis"]
+      ];
+
+    //get elements
+    var showLives = document.getElementById("myLives");
+    var showCategory = document.getElementById("categoryName");
+
+
+ //create alphabet UL
+    var buttons = function(){
+      myButtons = document.getElementById('buttons');
+      letters = document.createElement('ul');
+
+      for(var i =0; i < alphabet.length; i++)
+      {
+        letters.id = 'alphabet';
+        list = document.createElement('li');
+        list.id = 'letter';
+        list.innerHTML = alphabet[i];
+        check();
+        myButtons.appendChild(letters);
+        letters.appendChild(list);
+      }
+    }
+
+    //show selected category
+    var selectCat = function(){
+      if(chosenCategory === categories[0])
+      {
+        categoryName.innerHTML = "The chosen category is Movies!";
+      }
+      else if(chosenCategory === categories[1])
+      {
+        categoryName.innerHTML ="The chosen category is Food!";
+      }
+      else if(chosenCategory === categories[2])
+      {
+        categoryName.innerHTML ="The chosen category is Sports!"
+      }
+    }
+
+   
+
+    //create guesses UL
+    result = function(){
+      wordHolder = document.getElementById('hold');
+      correct = document.createElement('ul');
+
+      for(var i=0; i< word.length;i++ )
+      {
+        correct.setAttribute('id','my-word');
+        userGuess = document.createElement('li');
+        userGuess.setAttribute('class','guess');
+        if(word[i] === "-")
+        {
+          userGuess.innerHTML = "-";
+          space=1;
+        }
+        else
+        {
+          userGuess.innerHTML="_";
+        }
+
+        storedGuesses.push(userGuess);
+        wordHolder.appendChild(correct);
+        correct.appendChild(userGuess);
+
+
+      }
+    }
+
+    //show lives
+      comments=function(){
+        showLives.innerHTML ="You have " + lives + " lives";
+        if(lives < 1)
+        {
+          showLives.innerHTML = "Game Over";
+        }
+        for ( var i = 0; i < storedGuesses.length; i++)
+        {
+          if(counter + space === storedGuesses.length)
+          {
+            showLives.innerHTML = "You Win!"
+          }
+        }
+      }
+
+      //onClick Function
+      check= function(){
+        list.onclick = function(){
+          var guess = (this.innerHTML);
+          this.setAttribute('class','active');
+          this.onclick = null;
+          for(var i =0; i<word.length;i++)
+          {
+             if(word[i] === guess)
+             {
+              storedGuesses[i].innerHTML=guess;
+              counter += 1;
+             }
+          }
+          var j = (word.indexOf(guess));
+          if( j === -1)
+          {
+            lives -=1;
+            comments();
+          }
+          else
+          {
+            comments();
+          }
+        }
+      }
+
+
+
+
+      // Play function
+      play = function(){
+      chosenCategory= categories[Math.floor(Math.random()*categories.length)];
+      word = chosenCategory[Math.floor(Math.random()*chosenCategory.length)];
+      word= word.replace(/\s/g, "-");
+      check
+      console.log(word);
+      buttons();
+
+      guesses=[ ];
+      lives=10;
+      counter=0;
+      space=0;
+
+      selectCat();
+      result();
+      comments();
+    }
+
+
+
+
+
+    play();
+
+
+
+    //reset
+    document.getElementById('reset').onclick=function(){
+      correct.parentNode.removeChild(correct);
+      letters.parentNode.removeChild(letters);
+      play();
+    }
+
+
+     
+   </script>
+
+  </body>
+</html>
